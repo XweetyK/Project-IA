@@ -94,8 +94,6 @@ public class Minero : MonoBehaviour {
     void Store() {
         Debug.Log("Store()");
         if (!_inHome) {
-            Debug.Log("Invoke()");
-
             Invoke("StoreOre", 0.5f);
             _inHome = true;
             _mining = false;
