@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public class Minero : MonoBehaviour {
+
+    public enum state { idle = 0, travel, mining, returnHome, deposit, count }
+    public enum events { GoMine = 0, Mine, DoneMining, ArrivedHome, Empty, ResumeMine , count }
     [SerializeField] private float _minDist;
     [SerializeField] private float _mineTime;
     [SerializeField] private Transform _house;
@@ -15,13 +18,13 @@ public class Minero : MonoBehaviour {
     private int _cantMinas;
 
     void Start() {
-        _fsm = new FSM(5, 6);
-        _fsm.SetRelation(0, 1, 0);
-        _fsm.SetRelation(1, 2, 1);
-        _fsm.SetRelation(2, 3, 2);
-        _fsm.SetRelation(3, 4, 3);
-        _fsm.SetRelation(4, 0, 4);
-        _fsm.SetRelation(4, 1, 5);
+        _fsm = new FSM((int)state.count,(int) events.count);
+        _fsm.SetRelation((int)state.idle, (int)state.travel, (int)events.GoMine);
+        _fsm.SetRelation((int)state.travel, (int)state.mining, (int)events.Mine);
+        _fsm.SetRelation((int)state.mining, (int)state.returnHome, (int)events.DoneMining);
+        _fsm.SetRelation((int)state.returnHome, (int)state.deposit, (int)events.ArrivedHome);
+        _fsm.SetRelation((int)state.deposit, (int)state.idle, (int)events.Empty);
+        _fsm.SetRelation((int)state.deposit, (int)state.travel, (int)events.ResumeMine);
 
         _minas = FindObjectsOfType<Mina>();
         _nma = GetComponent<NavMeshAgent>();
@@ -51,7 +54,7 @@ public class Minero : MonoBehaviour {
     void Idle() {
         Debug.Log("Idle()");
         if (_cantMinas != 0) {
-            _fsm.SendEvent(0);
+            _fsm.SendEvent((int)events.GoMine);
         }
     }
 
@@ -61,7 +64,7 @@ public class Minero : MonoBehaviour {
         Vector3 _dif = transform.position - _minas[_cantMinas-1].transform.position;
         Debug.Log(Mathf.Abs(_dif.x));
         if (Mathf.Abs(_dif.x) < _minDist && Mathf.Abs(_dif.z) < _minDist) {
-            _fsm.SendEvent(1);
+            _fsm.SendEvent((int)events.Mine);
         }
     }
 
@@ -88,7 +91,7 @@ public class Minero : MonoBehaviour {
         _nma.SetDestination(_house.position);
         Vector3 _dif = transform.position -_house.position;
         if (Mathf.Abs(_dif.x) < _minDist && Mathf.Abs(_dif.z) < _minDist) {
-            _fsm.SendEvent(3);
+            _fsm.SendEvent((int)events.ArrivedHome);
         }
     }
     void Store() {
@@ -103,7 +106,7 @@ public class Minero : MonoBehaviour {
     void StoreOre() {
         Debug.Log("StoreOre()");
         if (_cantMinas != 0) {
-            _fsm.SendEvent(5);
-        } else { _fsm.SendEvent(4); }
+            _fsm.SendEvent((int)events.ResumeMine);
+        } else { _fsm.SendEvent((int)events.Empty); }
     }
 }
