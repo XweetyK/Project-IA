@@ -52,17 +52,17 @@ public class Minero : MonoBehaviour {
     }
 
     void Idle() {
-        Debug.Log("Idle()");
+        //Debug.Log("Idle()");
         if (_cantMinas != 0) {
             _fsm.SendEvent((int)events.GoMine);
         }
     }
 
     void GoMine() {
-        Debug.Log("GoMine()");
+        //Debug.Log("GoMine()");
         _nma.SetDestination(_minas[_cantMinas-1].transform.position);
         Vector3 _dif = transform.position - _minas[_cantMinas-1].transform.position;
-        Debug.Log(Mathf.Abs(_dif.x));
+        //Debug.Log(Mathf.Abs(_dif.x));
         if (Mathf.Abs(_dif.x) < _minDist && Mathf.Abs(_dif.z) < _minDist) {
             _fsm.SendEvent((int)events.Mine);
         }
@@ -77,7 +77,7 @@ public class Minero : MonoBehaviour {
     }
 
     void Mining() {
-        Debug.Log("Minando()");
+        //Debug.Log("Minando()");
         if (_minas[_cantMinas-1].Mining() == false) {
             Invoke("Mining", _mineTime);
         } else {
@@ -87,7 +87,7 @@ public class Minero : MonoBehaviour {
     }
 
     void GoHome() {
-        Debug.Log("GoHome()");
+        //Debug.Log("GoHome()");
         _nma.SetDestination(_house.position);
         Vector3 _dif = transform.position -_house.position;
         if (Mathf.Abs(_dif.x) < _minDist && Mathf.Abs(_dif.z) < _minDist) {
@@ -95,7 +95,7 @@ public class Minero : MonoBehaviour {
         }
     }
     void Store() {
-        Debug.Log("Store()");
+        //Debug.Log("Store()");
         if (!_inHome) {
             Invoke("StoreOre", 0.5f);
             _inHome = true;
@@ -104,7 +104,7 @@ public class Minero : MonoBehaviour {
     }
 
     void StoreOre() {
-        Debug.Log("StoreOre()");
+        //Debug.Log("StoreOre()");
         if (_cantMinas != 0) {
             _fsm.SendEvent((int)events.ResumeMine);
         } else { _fsm.SendEvent((int)events.Empty); }
