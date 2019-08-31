@@ -5278,6 +5278,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _terrain: {fileID: 963096278}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 512
   density: 0.1
 --- !u!4 &1726877116
 Transform:
