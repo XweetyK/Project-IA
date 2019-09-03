@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Minero.cs" />
     <Compile Include="Assets\Scripts\Node.cs" />
     <Compile Include="Assets\Scripts\NodeSystem.cs" />
+    <Compile Include="Assets\Scripts\Utility\Singleton.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/Administrador/Desktop/Project-IA/Proyecto-IA/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
