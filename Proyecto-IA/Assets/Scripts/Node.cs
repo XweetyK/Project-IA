@@ -13,5 +13,4 @@ public class Node
     public Node(Vector3 pos){
         this.pos = pos;
     }
-
 }

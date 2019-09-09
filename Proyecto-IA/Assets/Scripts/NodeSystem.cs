@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NodeSystem : MonoBehaviour
+public class NodeSystem : Singleton<NodeSystem>
 {
 
     [SerializeField]GameObject _terrain;
@@ -13,7 +13,7 @@ public class NodeSystem : MonoBehaviour
     float height = 0;
     float width = 0;
     Vector3 center;
-    [SerializeField] LayerMask layerMask;
+    //[SerializeField] LayerMask layerMask;
 
     //NodeInfo
     List<Node> _nodes;
@@ -26,6 +26,7 @@ public class NodeSystem : MonoBehaviour
     RaycastHit hit;
     //Node Pathfinding
     List<Node> openNodes;
+
     void Start()
     {
         _nodes = new List<Node>();
@@ -107,9 +108,10 @@ public class NodeSystem : MonoBehaviour
             if (Physics.Raycast(new Vector3(node.pos.x, pos.y + 10, node.pos.z), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity))
             {
                 Debug.Log("Did Hit");
-                if (hit.collider.gameObject.layer == 9)
-                {
+                if (hit.collider.gameObject.layer == 9) {
                     node.obstacle = false;
+                } else {
+                    node.obstacle = true;
                 }
                 Debug.Log("Hit: " + hit.collider.name);
             }
@@ -118,13 +120,11 @@ public class NodeSystem : MonoBehaviour
         StartCoroutine("updateObstacles");
     }
 
-    private void OnDrawGizmos(){
-        if (Application.isPlaying)
-        {
-            foreach (Node nodo in _nodes)
-            {
+    private void OnDrawGizmos() {
+        if (Application.isPlaying) {
+            foreach (Node nodo in _nodes) {
                 Gizmos.color = Color.red;
-                Gizmos.DrawSphere(nodo.pos, 0.5f);
+                Gizmos.DrawWireSphere(nodo.pos, 0.5f);
                 Debug.Log("MOSTRANDO");
             }
         }
