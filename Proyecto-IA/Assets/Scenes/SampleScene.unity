@@ -5281,7 +5281,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 512
-  density: 0.1
+  density: 0.5
 --- !u!4 &1726877116
 Transform:
   m_ObjectHideFlags: 0

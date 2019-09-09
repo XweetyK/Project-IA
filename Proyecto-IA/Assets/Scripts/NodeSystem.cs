@@ -19,7 +19,11 @@ public class NodeSystem : MonoBehaviour
     List<Node> _nodes;
     int nodeCant;
     [SerializeField] float density = 0.1f;
+    int verticalNodes = 0;
+    int horizontalNodes = 0;
 
+    //raycast
+    RaycastHit hit;
     //Node Pathfinding
     List<Node> openNodes;
     void Start()
@@ -28,7 +32,7 @@ public class NodeSystem : MonoBehaviour
         if (_terrain){
             init();
         }
-        StartCoroutine("updateObstacles");
+        //StartCoroutine("updateObstacles");
     }
 
     private void Update()
@@ -44,8 +48,23 @@ public class NodeSystem : MonoBehaviour
         width = boxC.bounds.max.z - boxC.bounds.min.z;
         height = boxC.bounds.max.x - boxC.bounds.min.x;
         Debug.Log("height: " + height + " Width:" + width);
-        createNode(pos.x, pos.z);
 
+        verticalNodes = Mathf.RoundToInt(height * density / 2);
+        horizontalNodes = Mathf.RoundToInt(width * density / 2);
+        Debug.Log("Verical: " + verticalNodes);
+        Debug.Log("Horizontal:" + horizontalNodes);
+        //Node creation
+        createNode(pos.x, pos.z);
+        float XSpacing = 1 / density;
+        float YSpacing = 1 / density;
+        //topRight
+        fillNodes(XSpacing , YSpacing);
+        //bottomRight
+        //fillNodes(XSpacing, -YSpacing);
+        //topLeft
+        //fillNodes(-XSpacing, YSpacing);
+        //bottomLeft
+        //fillNodes(-XSpacing, -YSpacing);
     }
 
 
@@ -62,6 +81,20 @@ public class NodeSystem : MonoBehaviour
             Debug.Log("Hit: " + hit.collider.name);
         }
         _nodes.Add(node);
+        nodeCant++;
+    }
+
+    void fillNodes(float offsetX, float offsetY){
+        for (int i = 0; i < horizontalNodes; i++)
+        {
+            for (int j = 0; j < verticalNodes; j++)
+            {
+                if(j == 0 && i == 0){
+                    break;
+                }
+                createNode(offsetX * i, offsetY * j);
+            }
+        }
     }
 
     void lookForNeighbours(Node nodeSource){
@@ -71,7 +104,6 @@ public class NodeSystem : MonoBehaviour
     IEnumerator updateObstacles(){
         Debug.Log("test");
         foreach(Node node in _nodes){
-            RaycastHit hit;
             if (Physics.Raycast(new Vector3(node.pos.x, pos.y + 10, node.pos.z), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity))
             {
                 Debug.Log("Did Hit");
@@ -92,7 +124,7 @@ public class NodeSystem : MonoBehaviour
             foreach (Node nodo in _nodes)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawSphere(nodo.pos, 1f);
+                Gizmos.DrawSphere(nodo.pos, 0.5f);
                 Debug.Log("MOSTRANDO");
             }
         }
