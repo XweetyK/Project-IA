@@ -2,130 +2,83 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NodeSystem : Singleton<NodeSystem>
-{
-
-    [SerializeField]GameObject _terrain;
-    bool isInit = false;
-
-    //MapLenght
-    Vector3 pos;
-    float height = 0;
-    float width = 0;
-    Vector3 center;
-    //[SerializeField] LayerMask layerMask;
-
-    //NodeInfo
+public class NodeSystem : Singleton<NodeSystem> {
+    [SerializeField] GameObject _terrain;
+    [SerializeField] int _density;
+    [SerializeField] string _layerMask;
+    [SerializeField] float _borderDistance;
     List<Node> _nodes;
-    int nodeCant;
-    [SerializeField] float density = 0.1f;
-    int verticalNodes = 0;
-    int horizontalNodes = 0;
-
-    //raycast
     RaycastHit hit;
-    //Node Pathfinding
-    List<Node> openNodes;
+    int _nodeCant;
+    BoxCollider _col;
+    Vector2 _dist;
+    float _height;
+    float _width;
+    Vector3 _startPoint;
+    bool _init = false;
 
-    void Start()
-    {
+
+    void Start() {
         _nodes = new List<Node>();
-        if (_terrain){
-            init();
+        if (_terrain) {
+            _col = _terrain.GetComponent<BoxCollider>();
+            Mapping();
         }
-        //StartCoroutine("updateObstacles");
-    }
-
-    private void Update()
-    {
-
-    }
-
-    void init(){
-        isInit = true;
-        pos = _terrain.transform.position;
-        BoxCollider boxC = _terrain.GetComponent<BoxCollider>();
-        center = boxC.bounds.center;
-        width = boxC.bounds.max.z - boxC.bounds.min.z;
-        height = boxC.bounds.max.x - boxC.bounds.min.x;
-        Debug.Log("height: " + height + " Width:" + width);
-
-        verticalNodes = Mathf.RoundToInt(height * density / 2);
-        horizontalNodes = Mathf.RoundToInt(width * density / 2);
-        Debug.Log("Verical: " + verticalNodes);
-        Debug.Log("Horizontal:" + horizontalNodes);
-        //Node creation
-        createNode(pos.x, pos.z);
-        float XSpacing = 1 / density;
-        float YSpacing = 1 / density;
-        //topRight
-        fillNodes(XSpacing , YSpacing);
-        //bottomRight
-        //fillNodes(XSpacing, -YSpacing);
-        //topLeft
-        //fillNodes(-XSpacing, YSpacing);
-        //bottomLeft
-        //fillNodes(-XSpacing, -YSpacing);
     }
 
 
-    void createNode(float posX, float posZ){
-        //Pos X Z pasada, y la pos del terreno + 1 en Y
-        Node node = new Node(new Vector3(posX, this.pos.y + 1f, posZ) );
-        RaycastHit hit;
-        if (Physics.Raycast(new Vector3(posX, pos.y + 10, posZ), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity))
-        {
-            Debug.Log("Did Hit");
-            if (hit.collider.gameObject.layer == 9){
-                node.obstacle = false;
-            }
-            Debug.Log("Hit: " + hit.collider.name);
+    void Update() {
+        if (_init) {
+            ObstacleUpdate();
         }
-        _nodes.Add(node);
-        nodeCant++;
     }
 
-    void fillNodes(float offsetX, float offsetY){
-        for (int i = 0; i < horizontalNodes; i++)
-        {
-            for (int j = 0; j < verticalNodes; j++)
-            {
-                if(j == 0 && i == 0){
-                    break;
+    void Mapping() {
+        _height = (_col.bounds.max.z-_borderDistance) * 2;
+        _width = (_col.bounds.max.x-_borderDistance) * 2;
+
+        Debug.Log(_height + " x " + _width);
+
+        _dist.x = (_width / _density);
+        _dist.y = (_height / _density);
+
+        _startPoint.x = _terrain.transform.position.x - (_width / 2);
+        _startPoint.y = _terrain.transform.position.y;
+        _startPoint.z = _terrain.transform.position.z - (_height / 2);
+        for (int i = 0; i <= _density; i++) {
+            for (int j = 0; j <= _density; j++) {
+
+                if (Physics.Raycast(new Vector3((_startPoint.x + (_dist.x * i)), (_startPoint.y + 10), (_startPoint.z + (_dist.y * j))),
+                transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, LayerMask.GetMask(_layerMask))) {
+                        Node _n = new Node(hit.point);
+                        _nodes.Add(_n);
                 }
-                createNode(offsetX * i, offsetY * j);
+
             }
         }
+        Debug.Log(_nodes.Count);
+        _init = true;
     }
 
-    void lookForNeighbours(Node nodeSource){
-
-    }
-
-    IEnumerator updateObstacles(){
-        Debug.Log("test");
-        foreach(Node node in _nodes){
-            if (Physics.Raycast(new Vector3(node.pos.x, pos.y + 10, node.pos.z), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity))
-            {
-                Debug.Log("Did Hit");
-                if (hit.collider.gameObject.layer == 9) {
-                    node.obstacle = false;
-                } else {
-                    node.obstacle = true;
-                }
-                Debug.Log("Hit: " + hit.collider.name);
+    void ObstacleUpdate() {
+        foreach (Node n in _nodes) {
+            if (Physics.Raycast(new Vector3(n.pos.x, n.pos.y + 10, n.pos.z), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity)) {
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer(_layerMask)) {
+                    n.obstacle = false;
+                } else { n.obstacle = true; }
             }
         }
-        yield return new WaitForSeconds(0.2f);
-        StartCoroutine("updateObstacles");
     }
 
     private void OnDrawGizmos() {
         if (Application.isPlaying) {
-            foreach (Node nodo in _nodes) {
-                Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(nodo.pos, 0.5f);
-                Debug.Log("MOSTRANDO");
+            if (_nodes.Count != 0) {
+                foreach (Node n in _nodes) {
+                    if (n.obstacle) {
+                        Gizmos.color = Color.red;
+                    } else { Gizmos.color = Color.blue; }
+                    Gizmos.DrawWireSphere(n.pos, 0.5f);
+                }
             }
         }
     }
