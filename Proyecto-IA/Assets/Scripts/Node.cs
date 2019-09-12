@@ -9,8 +9,10 @@ public class Node
     public bool obstacle;
     public state nodeState;
     public Vector3 pos;
+    public int _id;
 
-    public Node(Vector3 pos){
+    public Node(Vector3 pos, int id){
         this.pos = pos;
+        _id = id;
     }
 }

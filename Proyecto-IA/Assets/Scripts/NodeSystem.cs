@@ -45,15 +45,15 @@ public class NodeSystem : Singleton<NodeSystem> {
         _startPoint.x = _terrain.transform.position.x - (_width / 2);
         _startPoint.y = _terrain.transform.position.y;
         _startPoint.z = _terrain.transform.position.z - (_height / 2);
+        int id = 0;
         for (int i = 0; i <= _density; i++) {
             for (int j = 0; j <= _density; j++) {
 
                 if (Physics.Raycast(new Vector3((_startPoint.x + (_dist.x * i)), (_startPoint.y + 10), (_startPoint.z + (_dist.y * j))),
                 transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, LayerMask.GetMask(_layerMask))) {
-                        Node _n = new Node(hit.point);
-                        _nodes.Add(_n);
+                    Node _n = new Node(hit.point, id++);
+                    _nodes.Add(_n);
                 }
-
             }
         }
         Debug.Log(_nodes.Count);
@@ -81,5 +81,9 @@ public class NodeSystem : Singleton<NodeSystem> {
                 }
             }
         }
+    }
+
+    public ref List<Node> nodeList{
+        get { return ref _nodes; }
     }
 }
