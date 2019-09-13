@@ -7,16 +7,15 @@ public class NodeSystem : Singleton<NodeSystem> {
     [SerializeField] int _density;
     [SerializeField] string _layerMask;
     [SerializeField] float _borderDistance;
+    [SerializeField] float _maxDist;
     List<Node> _nodes;
     RaycastHit hit;
-    int _nodeCant;
     BoxCollider _col;
     Vector2 _dist;
     float _height;
     float _width;
     Vector3 _startPoint;
     bool _init = false;
-
 
     void Start() {
         _nodes = new List<Node>();
@@ -31,11 +30,14 @@ public class NodeSystem : Singleton<NodeSystem> {
         if (_init) {
             ObstacleUpdate();
         }
+        if (Input.GetMouseButtonDown(0)) {
+            Check();
+        }
     }
 
     void Mapping() {
-        _height = (_col.bounds.max.z-_borderDistance) * 2;
-        _width = (_col.bounds.max.x-_borderDistance) * 2;
+        _height = (_col.bounds.max.z - _borderDistance) * 2;
+        _width = (_col.bounds.max.x - _borderDistance) * 2;
 
         Debug.Log(_height + " x " + _width);
 
@@ -57,6 +59,7 @@ public class NodeSystem : Singleton<NodeSystem> {
             }
         }
         Debug.Log(_nodes.Count);
+        AddNeighbors();
         _init = true;
     }
 
@@ -74,8 +77,11 @@ public class NodeSystem : Singleton<NodeSystem> {
         if (Application.isPlaying) {
             if (_nodes.Count != 0) {
                 foreach (Node n in _nodes) {
-                    if (n.obstacle) {
-                        Gizmos.color = Color.red;
+                    //if (n.obstacle) {
+                    //    Gizmos.color = Color.red;
+                    //} 
+                    if (n.selected) {
+                        Gizmos.color = Color.green;
                     } else { Gizmos.color = Color.blue; }
                     Gizmos.DrawWireSphere(n.pos, 0.5f);
                 }
@@ -83,7 +89,35 @@ public class NodeSystem : Singleton<NodeSystem> {
         }
     }
 
-    public ref List<Node> nodeList{
+    public ref List<Node> nodeList {
         get { return ref _nodes; }
+    }
+
+    private void AddNeighbors() {
+        foreach (var n in _nodes) {
+            foreach (var n2 in _nodes) {
+                if (n != n2) {
+                    float dist = Vector3.Distance(n.pos, n2.pos);
+                    if (dist <= _dist.x + (_dist.x/4)) {
+                        Node adj = n2;
+                        n.Adjacents(adj);
+                    }
+                }
+            }
+        }
+    }
+
+    private void Check() {
+        foreach (var n in _nodes) {
+            n.selected = false;
+        }
+
+        int r = Random.Range(0, _nodes.Count);
+        Debug.Log(r);
+
+        _nodes[r].selected = true;
+        foreach (var n in _nodes[r].adjacents) {
+            n.selected = true;
+        }
     }
 }
