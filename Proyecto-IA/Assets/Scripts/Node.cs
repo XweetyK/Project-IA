@@ -8,9 +8,12 @@ public class Node
     public List<Node> adjacents;
     public bool obstacle;
     public bool selected = false;
-    private State nodeState;
+    private State nodeState = State.Null;
     public Vector3 pos;
     public int _id;
+
+    //Pathfinding
+    public Node parent;
 
     public Node(Vector3 pos, int id){
         nodeState = State.Null;
@@ -18,14 +21,20 @@ public class Node
         this.pos = pos;
         _id = id;
     }
-    public void Adjacents(Node node) {
+    public void AddAdjacents(Node node) {
         adjacents.Add(node);
     }
 
-    public void Open() {
+    public void Open(Node parent) {
         nodeState = State.Open;
+        this.parent = parent;
     }
     public void Close() {
         nodeState = State.Close;
+    }
+
+    public void Null()
+    {
+        nodeState = State.Null;
     }
 }

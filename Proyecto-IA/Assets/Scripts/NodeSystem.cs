@@ -109,14 +109,14 @@ public class NodeSystem : Singleton<NodeSystem> {
                         case true:
                             if (dist <= (_dist * Mathf.Sqrt(2)) + (_dist / 4)) {
                                 Node adj = n2;
-                                n.Adjacents(adj);
+                                n.AddAdjacents(adj);
                             }
                             break;
 
                         case false:
                             if (dist <= _dist + (_dist / 4)) {
                                 Node adj = n2;
-                                n.Adjacents(adj);
+                                n.AddAdjacents(adj);
                             }
                             break;
                     }
