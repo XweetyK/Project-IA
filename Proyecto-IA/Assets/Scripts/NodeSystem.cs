@@ -12,7 +12,8 @@ public class NodeSystem : Singleton<NodeSystem> {
     public List<Node> _nodes;
     RaycastHit hit;
     BoxCollider _col;
-    Vector2 _dist;
+    float _dist;
+    Vector2 _nodesCant;
     float _height;
     float _width;
     Vector3 _startPoint;
@@ -40,19 +41,24 @@ public class NodeSystem : Singleton<NodeSystem> {
         _height = (_col.bounds.max.z - _borderDistance) * 2;
         _width = (_col.bounds.max.x - _borderDistance) * 2;
 
-        Debug.Log(_height + " x " + _width);
-
-        _dist.x = (_width / _density);
-        _dist.y = (_height / _density);
+        if (_height > _width) {
+            _dist = (_width / _density);
+            _nodesCant.x = (int)_density;
+            _nodesCant.y = (int)_height / _dist;
+        } else {
+            _dist = (_height / _density);
+            _nodesCant.x = (int)_width / _dist;
+            _nodesCant.y = (int)_density;
+        }
 
         _startPoint.x = _terrain.transform.position.x - (_width / 2);
         _startPoint.y = _terrain.transform.position.y;
         _startPoint.z = _terrain.transform.position.z - (_height / 2);
         int id = 0;
-        for (int i = 0; i <= _density; i++) {
-            for (int j = 0; j <= _density; j++) {
+        for (int i = 0; i <= _nodesCant.x; i++) {
+            for (int j = 0; j <= _nodesCant.y; j++) {
 
-                if (Physics.Raycast(new Vector3((_startPoint.x + (_dist.x * i)), (_startPoint.y + 10), (_startPoint.z + (_dist.y * j))),
+                if (Physics.Raycast(new Vector3((_startPoint.x + (_dist * i)), (_startPoint.y + 10), (_startPoint.z + (_dist * j))),
                 transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, LayerMask.GetMask(_layerMask))) {
                     Node _n = new Node(hit.point, id++);
                     _nodes.Add(_n);
@@ -101,14 +107,14 @@ public class NodeSystem : Singleton<NodeSystem> {
                     float dist = Vector3.Distance(n.pos, n2.pos);
                     switch (_diagonal) {
                         case true:
-                            if (dist <= (_dist.x * Mathf.Sqrt(2)) + (_dist.x / 4)) {
+                            if (dist <= (_dist * Mathf.Sqrt(2)) + (_dist / 4)) {
                                 Node adj = n2;
                                 n.Adjacents(adj);
                             }
                             break;
 
                         case false:
-                            if (dist <= _dist.x + (_dist.x / 4)) {
+                            if (dist <= _dist + (_dist / 4)) {
                                 Node adj = n2;
                                 n.Adjacents(adj);
                             }
