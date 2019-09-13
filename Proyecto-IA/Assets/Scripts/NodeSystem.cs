@@ -8,7 +8,8 @@ public class NodeSystem : Singleton<NodeSystem> {
     [SerializeField] string _layerMask;
     [SerializeField] float _borderDistance;
     [SerializeField] float _maxDist;
-    List<Node> _nodes;
+    [SerializeField] bool _diagonal;
+    public List<Node> _nodes;
     RaycastHit hit;
     BoxCollider _col;
     Vector2 _dist;
@@ -98,9 +99,20 @@ public class NodeSystem : Singleton<NodeSystem> {
             foreach (var n2 in _nodes) {
                 if (n != n2) {
                     float dist = Vector3.Distance(n.pos, n2.pos);
-                    if (dist <= _dist.x + (_dist.x/4)) {
-                        Node adj = n2;
-                        n.Adjacents(adj);
+                    switch (_diagonal) {
+                        case true:
+                            if (dist <= (_dist.x * Mathf.Sqrt(2)) + (_dist.x / 4)) {
+                                Node adj = n2;
+                                n.Adjacents(adj);
+                            }
+                            break;
+
+                        case false:
+                            if (dist <= _dist.x + (_dist.x / 4)) {
+                                Node adj = n2;
+                                n.Adjacents(adj);
+                            }
+                            break;
                     }
                 }
             }

@@ -4695,10 +4695,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _terrain: {fileID: 963096278}
-  _density: 60
+  _density: 15
   _layerMask: Terrain
   _borderDistance: 1
   _maxDist: 1
+  _diagonal: 1
 --- !u!4 &1609701314
 Transform:
   m_ObjectHideFlags: 0
