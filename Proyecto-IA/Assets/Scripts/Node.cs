@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Node
 {
-    private enum State { Open, Close, Null };
+    public enum State { Open, Close, Null };
     public List<Node> adjacents;
     public bool obstacle;
     public bool selected = false;
-    private State nodeState = State.Null;
+    public State nodeState = State.Null;
     public Vector3 pos;
     public int _id;
 

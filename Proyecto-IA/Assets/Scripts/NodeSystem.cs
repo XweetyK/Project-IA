@@ -9,6 +9,7 @@ public class NodeSystem : Singleton<NodeSystem> {
     [SerializeField] float _borderDistance;
     [SerializeField] float _maxDist;
     [SerializeField] bool _diagonal;
+    [SerializeField] Pathfinding _path;
     public List<Node> _nodes;
     RaycastHit hit;
     BoxCollider _col;
@@ -18,8 +19,11 @@ public class NodeSystem : Singleton<NodeSystem> {
     float _width;
     Vector3 _startPoint;
     bool _init = false;
+    Node nDest = null;
+    Node nInit = null;
+    List<Node> nPath;
 
-    void Start() {
+    protected override void Initialize() {
         _nodes = new List<Node>();
         if (_terrain) {
             _col = _terrain.GetComponent<BoxCollider>();
@@ -32,8 +36,9 @@ public class NodeSystem : Singleton<NodeSystem> {
         if (_init) {
             ObstacleUpdate();
         }
-        if (Input.GetMouseButtonDown(0)) {
-            Check();
+        Check();
+        if (Input.GetButtonDown("Submit")) {
+            nPath=_path.findPath(nInit, nDest);
         }
     }
 
@@ -84,20 +89,27 @@ public class NodeSystem : Singleton<NodeSystem> {
         if (Application.isPlaying) {
             if (_nodes.Count != 0) {
                 foreach (Node n in _nodes) {
-                    //if (n.obstacle) {
-                    //    Gizmos.color = Color.red;
-                    //} 
                     if (n.selected) {
                         Gizmos.color = Color.green;
-                    } else { Gizmos.color = Color.blue; }
+                    } else if (n.nodeState==Node.State.Open) {
+                        Gizmos.color = Color.yellow;
+                    } else if (n.nodeState == Node.State.Close) {
+                        Gizmos.color = Color.red;
+                    } else { Gizmos.color = Color.black; }
+                    Gizmos.DrawWireSphere(n.pos, 0.5f);
+                }
+            }
+            if (nPath!=null) {
+                foreach (Node n in nPath) {
+                    Gizmos.color = Color.blue;
                     Gizmos.DrawWireSphere(n.pos, 0.5f);
                 }
             }
         }
     }
 
-    public ref List<Node> nodeList {
-        get { return ref _nodes; }
+    public List<Node> nodeList {
+        get { return _nodes; }
     }
 
     private void AddNeighbors() {
@@ -126,16 +138,38 @@ public class NodeSystem : Singleton<NodeSystem> {
     }
 
     private void Check() {
-        foreach (var n in _nodes) {
+        if (Input.GetMouseButtonDown(0)) {
+            RaycastHit hit;
+            float dist = 100;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100)) {
+                foreach (Node n in nodeList) {
+                    if (Vector3.Distance(n.pos, hit.point)<dist) {
+                        nInit = n;
+                        dist = Vector3.Distance(n.pos, hit.point);
+                    }
+                }
+            }
+        }
+        if (Input.GetMouseButtonDown(1)) {
+            RaycastHit hit;
+            float dist = 100;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100)) {
+                foreach (Node n in nodeList) {
+                    if (Vector3.Distance(n.pos, hit.point) < dist) {
+                        nDest = n;
+                        dist = Vector3.Distance(n.pos, hit.point);
+                    }
+                }
+            }
+        }
+        foreach (Node n in nodeList) {
             n.selected = false;
         }
-
-        int r = Random.Range(0, _nodes.Count);
-        Debug.Log(r);
-
-        _nodes[r].selected = true;
-        foreach (var n in _nodes[r].adjacents) {
-            n.selected = true;
+        if (nInit!=null) {
+            nInit.selected = true;
+        }
+        if (nDest != null) {
+            nDest.selected = true;
         }
     }
 }

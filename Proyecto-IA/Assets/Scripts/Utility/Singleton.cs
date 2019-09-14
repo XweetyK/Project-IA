@@ -8,7 +8,7 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
 
     public static T Instance {
         get{
-            if (instance = null)
+            if (instance == null)
                 instance = FindObjectOfType<Singleton<T>>();
             return (T)instance;
         }
