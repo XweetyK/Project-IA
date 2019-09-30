@@ -7,7 +7,7 @@ public class NodeSystem : Singleton<NodeSystem> {
     [SerializeField] int _density;
     [SerializeField] string _layerMask;
     [SerializeField] float _borderDistance;
-    [SerializeField] float _maxDist;
+    [SerializeField] float _closeDist = 0.10f;
     [SerializeField] bool _diagonal;
     [SerializeField] Pathfinding _path;
     public List<Node> _nodes;
@@ -108,11 +108,6 @@ public class NodeSystem : Singleton<NodeSystem> {
         }
     }
 
-    public List<Node> nodeList {
-        get { return _nodes; }
-    }
-
-
     public Node findNode(Vector3 pos){
         Node resultNode = null;
         Node tempNode = null;
@@ -131,7 +126,7 @@ public class NodeSystem : Singleton<NodeSystem> {
         return resultNode;
     }
 
-    float nodeDistance(Node sourceNode, Vector3 DestPosition){
+    public float nodeDistance(Node sourceNode, Vector3 DestPosition){
         return Vector3.Distance(new Vector3(sourceNode.pos.x, sourceNode.pos.y, sourceNode.pos.z), DestPosition);
     }
 
@@ -194,5 +189,13 @@ public class NodeSystem : Singleton<NodeSystem> {
         if (nDest != null) {
             nDest.selected = true;
         }
+    }
+
+    public List<Node> nodeList {
+        get { return _nodes; }
+    }
+
+    public float closeDist {
+        get { return _closeDist; }
     }
 }

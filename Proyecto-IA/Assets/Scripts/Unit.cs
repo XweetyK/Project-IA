@@ -42,9 +42,12 @@ public abstract class Unit : MonoBehaviour
     IEnumerator moveTo(List<Node> path){
         bool arrived = false;
         int pointer = 0;
+        float dist = NodeSystem.Instance.closeDist;
         while (arrived == false){
             Node currentTarget = path[pointer];
-
+            if(dist < NodeSystem.Instance.nodeDistance(currentTarget, transform.position)) {
+                pointer++;
+            }
             yield return null;
         }
         yield return null;
