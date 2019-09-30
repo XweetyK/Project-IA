@@ -112,6 +112,29 @@ public class NodeSystem : Singleton<NodeSystem> {
         get { return _nodes; }
     }
 
+
+    public Node findNode(Vector3 pos){
+        Node resultNode = null;
+        Node tempNode = null;
+        foreach (Node n in nodeList){
+            if(tempNode!= null){
+                if(nodeDistance(n,pos) < nodeDistance(tempNode, pos)){
+                    tempNode = n;
+                    resultNode = n;
+                }
+            }
+            else{
+                tempNode = n;
+                resultNode = n;
+            }
+        }
+        return resultNode;
+    }
+
+    float nodeDistance(Node sourceNode, Vector3 DestPosition){
+        return Vector3.Distance(new Vector3(sourceNode.pos.x, sourceNode.pos.y, sourceNode.pos.z), DestPosition);
+    }
+
     private void AddNeighbors() {
         foreach (var n in _nodes) {
             foreach (var n2 in _nodes) {
