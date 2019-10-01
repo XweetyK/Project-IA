@@ -43,10 +43,13 @@ public abstract class Unit : MonoBehaviour
         bool arrived = false;
         int pointer = 0;
         float dist = NodeSystem.Instance.closeDist;
+        Node currentTarget = path[pointer];
         while (arrived == false){
-            Node currentTarget = path[pointer];
+
             if(dist < NodeSystem.Instance.nodeDistance(currentTarget, transform.position)) {
                 pointer++;
+                currentTarget = path[pointer];
+                transform.Translate(new Vector3(currentTarget.pos.x, transform.position.y, currentTarget.pos.z)*_speed);
             }
             yield return null;
         }
