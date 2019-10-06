@@ -16,7 +16,6 @@ public class Pathfinding : MonoBehaviour {
     }
 
     public List<Node> findPath(Node sourceNode, Node destNode) {
-        Debug.Log("check");
         clear();
         NodePath.Clear();
         NodeList = NodeSystem.Instance.nodeList;

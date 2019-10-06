@@ -10,6 +10,7 @@ public class NodeSystem : Singleton<NodeSystem> {
     [SerializeField] float _closeDist = 0.10f;
     [SerializeField] bool _diagonal;
     [SerializeField] Pathfinding _path;
+    [SerializeField] Unit testUnit;
     public List<Node> _nodes;
     RaycastHit hit;
     BoxCollider _col;
@@ -38,7 +39,8 @@ public class NodeSystem : Singleton<NodeSystem> {
         }
         Check();
         if (Input.GetButtonDown("Submit")) {
-            nPath=_path.findPath(nInit, nDest);
+            nPath=_path.findPath(findNode(testUnit.transform.position), nDest);
+            testUnit.moveCommand(nDest);
         }
     }
 
