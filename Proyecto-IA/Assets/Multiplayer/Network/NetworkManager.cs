@@ -4,53 +4,13 @@ using UnityEngine;
 using System.Net;
 using System;
 
-public struct Client
-{
-    public enum State{ Disconnected, Connected }
-    public float timeStamp;
-    public int id;
-    public IPEndPoint ipEndPoint;
-    public State state;
-    public long clientSalt;
-    public long serverSalt;
-
-    public Client(IPEndPoint ipEndPoint, int id, float timeStamp, long clientSalt, long serverSalt)
-    {
-        this.timeStamp = timeStamp;
-        this.id = id;
-        this.ipEndPoint = ipEndPoint;
-        this.state = State.Disconnected;
-        this.clientSalt = clientSalt;
-        this.serverSalt = serverSalt;
-    }
-}
-
 public class NetworkManager : Singleton<NetworkManager>, IReceiveData
 {
-    public IPAddress ipAddress
-    {
-        get; private set;
-    }
-
-    public int port
-    {
-        get; private set;
-    }
-
-    public bool isServer
-    {
-        get; private set;
-    }
-
-    public long clientSalt
-    {
-        get; private set;
-    }
-
-    public long serverSalt
-    {
-        get; private set;
-    }
+    public IPAddress ipAddress;
+    public int port;
+    public bool isServer;
+    public long clientSalt;
+    public long serverSalt;
 
     public Client.State state
     {
@@ -80,7 +40,7 @@ public class NetworkManager : Singleton<NetworkManager>, IReceiveData
         connection = new UdpConnection(port, this);
     }
 
-    public void StartClient(IPAddress ip, int port, long clientSalt, long serverSalt)
+    public bool StartClient(IPAddress ip, int port)
     {
         isServer = false;
         
@@ -89,7 +49,7 @@ public class NetworkManager : Singleton<NetworkManager>, IReceiveData
         
         connection = new UdpConnection(ip, port, this);
 
-        AddClient(new IPEndPoint(ip, port), clientSalt, serverSalt);
+        return true;
     }
 
     void AddClient(IPEndPoint ip, long clientSalt, long serverSalt)
