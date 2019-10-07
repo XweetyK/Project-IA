@@ -60,7 +60,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Multiplayer\Network\ConnectionManager.cs" />
+    <Compile Include="Assets\Multiplayer\Network\interfaces\IRecieveData.cs" />
+    <Compile Include="Assets\Multiplayer\Network\NetworkManager.cs" />
+    <Compile Include="Assets\Multiplayer\Network\packets\NetworkPacket.cs" />
+    <Compile Include="Assets\Multiplayer\Network\UdpConnection.cs" />
+    <Compile Include="Assets\Multiplayer\UI\TestingPos.cs" />
+    <Compile Include="Assets\Multiplayer\Utils\Cube.cs" />
     <Compile Include="Assets\Scripts\FSM.cs" />
+    <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Mina.cs" />
     <Compile Include="Assets\Scripts\Minero.cs" />
     <Compile Include="Assets\Scripts\Node.cs" />
