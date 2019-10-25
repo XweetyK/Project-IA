@@ -70,6 +70,7 @@
     <Compile Include="Assets\Multiplayer\Utils\Cube.cs" />
     <Compile Include="Assets\Multiplayer\Utils\ISerialize.cs" />
     <Compile Include="Assets\Multiplayer\Utils\LongGenerator.cs" />
+    <Compile Include="Assets\Scripts\DynamicTerrainTiling.cs" />
     <Compile Include="Assets\Scripts\FSM.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Mina.cs" />
