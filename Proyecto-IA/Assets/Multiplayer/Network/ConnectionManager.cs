@@ -61,9 +61,7 @@ public class ConnectionManager : Singleton<ConnectionManager> {
         MsgConnectionRequest();
     }
     private void MsgConnectionRequest() {
-        ConnectionRequestPacket request = new ConnectionRequestPacket();
-        request.payload.clientsalt = clientSalt;
-        SendToServer(request);
+        //TODO
     }
     private void MsgChallengeRequest() {
         //TODO
