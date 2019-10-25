@@ -9,8 +9,6 @@ public class NodeSystem : Singleton<NodeSystem> {
     [SerializeField] float _borderDistance;
     [SerializeField] float _closeDist = 0.10f;
     [SerializeField] bool _diagonal;
-    [SerializeField] Pathfinding _path;
-    [SerializeField] Unit testUnit;
     public List<Node> _nodes;
     RaycastHit hit;
     BoxCollider _col;
@@ -22,7 +20,6 @@ public class NodeSystem : Singleton<NodeSystem> {
     bool _init = false;
     Node nDest = null;
     Node nInit = null;
-    List<Node> nPath;
 
     protected override void Initialize() {
         _nodes = new List<Node>();
@@ -32,15 +29,9 @@ public class NodeSystem : Singleton<NodeSystem> {
         }
     }
 
-
     void Update() {
         if (_init) {
             ObstacleUpdate();
-        }
-        Check();
-        if (Input.GetButtonDown("Submit")) {
-            nPath=_path.findPath(findNode(testUnit.transform.position), nDest);
-            testUnit.moveCommand(nDest);
         }
     }
 
@@ -101,12 +92,12 @@ public class NodeSystem : Singleton<NodeSystem> {
                     Gizmos.DrawWireSphere(n.pos, 0.5f);
                 }
             }
-            if (nPath!=null) {
-                foreach (Node n in nPath) {
-                    Gizmos.color = Color.blue;
-                    Gizmos.DrawWireSphere(n.pos, 0.5f);
-                }
-            }
+            //if (nPath!=null) {
+            //    foreach (Node n in nPath) {
+            //        Gizmos.color = Color.blue;
+            //        Gizmos.DrawWireSphere(n.pos, 0.5f);
+            //    }
+            //}
         }
     }
 
@@ -154,42 +145,6 @@ public class NodeSystem : Singleton<NodeSystem> {
                     }
                 }
             }
-        }
-    }
-
-    private void Check() {
-        if (Input.GetMouseButtonDown(0)) {
-            RaycastHit hit;
-            float dist = 100;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100)) {
-                foreach (Node n in nodeList) {
-                    if (Vector3.Distance(n.pos, hit.point)<dist) {
-                        nInit = n;
-                        dist = Vector3.Distance(n.pos, hit.point);
-                    }
-                }
-            }
-        }
-        if (Input.GetMouseButtonDown(1)) {
-            RaycastHit hit;
-            float dist = 100;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100)) {
-                foreach (Node n in nodeList) {
-                    if (Vector3.Distance(n.pos, hit.point) < dist) {
-                        nDest = n;
-                        dist = Vector3.Distance(n.pos, hit.point);
-                    }
-                }
-            }
-        }
-        foreach (Node n in nodeList) {
-            n.selected = false;
-        }
-        if (nInit!=null) {
-            nInit.selected = true;
-        }
-        if (nDest != null) {
-            nDest.selected = true;
         }
     }
 

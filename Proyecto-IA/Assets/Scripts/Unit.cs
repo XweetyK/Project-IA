@@ -11,12 +11,11 @@ public abstract class Unit : MonoBehaviour
     protected float _attack;
     protected float _attackSpeed;
     protected float _defense;
-    
-    public virtual void moveCommand(Node targetNode){
+    protected List<Node> _nPath;
+
+    public virtual void moveCommand(){
         StopCoroutine("moveTo");
-        Node posNode = NodeSystem.Instance.findNode(transform.position);
-        List<Node> pathToTake = NodeSystem.Instance.GetComponent<Pathfinding>().findPath(posNode, targetNode);
-        StartCoroutine(moveTo(pathToTake));
+        StartCoroutine(moveTo(_nPath));
     }
     
 
@@ -42,26 +41,27 @@ public abstract class Unit : MonoBehaviour
 
     IEnumerator moveTo(List<Node> path){
         bool arrived = false;
-        int pointer = path.Count - 1;
-        float dist = NodeSystem.Instance.closeDist;
-        Node currentTarget = path[pointer];
-        while (arrived == false){
-        if(dist > NodeSystem.Instance.nodeDistance(currentTarget, transform.position)) {
-                pointer--;
-                if (pointer < 0){
-                    arrived = true;
-                    break;
-                }
-                currentTarget = path[pointer];
-            }
-            Debug.Log(NodeSystem.Instance.nodeDistance(currentTarget, transform.position));
-            Debug.Log("Nodo: " + pointer);
-            Vector3 dir = (new Vector3(currentTarget.pos.x, currentTarget.pos.y, currentTarget.pos.z) - transform.position).normalized;
-            //rot test
-            //transform.rotation = Quaternion.LookRotation(dir);
-            transform.Translate(transform.forward * _speed * Time.deltaTime);
-            yield return null;
-        }
+        
+        //int pointer = path.Count - 1;
+        //float dist = NodeSystem.Instance.closeDist;
+        //Node currentTarget = path[pointer];
+        //while (arrived == false) {
+        //    if (dist > NodeSystem.Instance.nodeDistance(currentTarget, transform.position)) {
+        //        pointer--;
+        //        if (pointer < 0) {
+        //            arrived = true;
+        //            break;
+        //        }
+        //        currentTarget = path[pointer];
+        //    }
+        //    Debug.Log(NodeSystem.Instance.nodeDistance(currentTarget, transform.position));
+        //    Debug.Log("Nodo: " + pointer);
+        //    Vector3 dir = (new Vector3(currentTarget.pos.x, currentTarget.pos.y, currentTarget.pos.z) - transform.position).normalized;
+        //    //rot test
+        //    //transform.rotation = Quaternion.LookRotation(dir);
+        //    transform.Translate(transform.forward * _speed * Time.deltaTime);
+        //    yield return null;
+        //}
         yield return null;
     }
 
@@ -73,5 +73,5 @@ public abstract class Unit : MonoBehaviour
         return result;
     }
 
-
+    public List<Node> Path { set { _nPath = value; } }
 }

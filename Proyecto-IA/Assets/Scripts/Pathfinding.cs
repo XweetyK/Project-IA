@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pathfinding : MonoBehaviour {
+public class Pathfinding : Singleton<Pathfinding> {
     private enum FindMethod { BreadthFirst, DepthFirst }
     [SerializeField] FindMethod currentMethod = FindMethod.BreadthFirst;
     private LinkedList<Node> openNodes;
     private List<Node> closedNodes;
     private List<Node> NodeList;
     private List<Node> NodePath;
-    void Start() {
+
+    protected override void Initialize() {
         openNodes = new LinkedList<Node>();
         closedNodes = new List<Node>();
         NodePath = new List<Node>();
@@ -47,9 +48,6 @@ public class Pathfinding : MonoBehaviour {
             }
         }
         return null;
-
-        //send to movement
-
     }
     void createPath(Node destNode) {
         NodePath.Add(destNode);
@@ -72,10 +70,4 @@ public class Pathfinding : MonoBehaviour {
         openNodes.Clear();
         closedNodes.Clear();
     }
-
-
-
-
-
-
 }
