@@ -28,25 +28,20 @@ public class GameController : MonoBehaviour
                 }
             }
         }
-        if (Input.GetMouseButtonDown(0) && _selecUnit && _timing>2) {
+        if (Input.GetMouseButtonDown(1) && _selecUnit) {
             RaycastHit hit;
             Node init, dest;
             
             init=NodeSystem.Instance.findNode(_unit.transform.position);
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100)) {
                 dest = NodeSystem.Instance.findNode(hit.point);
-                Debug.LogWarning("dest selected!");
                 List<Node> t = Pathfinding.Instance.findPath(init, dest);
                 if ( t != null) {
-                    _unit.Path = t;
-                    Debug.LogWarning("path assigned!");
+                    t.Reverse();
+                    _unit.Path = new List<Node>(t);
                 }
             }
             _unit.moveCommand();
-            Debug.LogWarning("moving!");
-        }
-        if (Input.GetMouseButtonDown(1) && _selecUnit) {
-            Debug.LogWarning("Release Unit!");
             _unit = null;
             _selecUnit = false;
         }
