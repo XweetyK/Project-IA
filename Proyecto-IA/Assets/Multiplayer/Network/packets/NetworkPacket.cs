@@ -52,7 +52,7 @@ public class UserHeader: ISerialize {
     protected void OnSerialize(Stream stream) { }
     protected void OnDeserialize(Stream stream) { }
 }
-public abstract class NetworkPacket<P> : ISerialize
+public abstract class NetworkPacket<P> 
 {
 
     public PacketType type;

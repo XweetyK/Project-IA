@@ -22,7 +22,7 @@ public class NetworkScreen : Singleton<NetworkScreen>
         IPAddress ipAddress = IPAddress.Parse(addressInputField.text);
         int port = System.Convert.ToInt32(portInputField.text);
 
-        ConnectionManager.Instance.connectToServer(ipAddress, port, SwitchToGame);
+        //ConnectionManager.Instance.connectToServer(ipAddress, port, SwitchToGame);
     }
 
     void OnStartServerBtnClick()

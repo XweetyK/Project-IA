@@ -9,7 +9,7 @@ public class Node
     public bool obstacle;
     public bool selected = false;
     public State nodeState = State.Null;
-    public Vector3 pos;
+    private Vector3 _pos;
     public int _id;
 
     //Pathfinding
@@ -18,7 +18,7 @@ public class Node
     public Node(Vector3 pos, int id){
         nodeState = State.Null;
         adjacents = new List<Node>();
-        this.pos = pos;
+        _pos = pos;
         _id = id;
     }
     public void AddAdjacents(Node node) {
@@ -36,5 +36,8 @@ public class Node
     public void Null()
     {
         nodeState = State.Null;
+    }
+    public Vector3 Pos {
+        get { return _pos; }
     }
 }

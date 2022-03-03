@@ -10,7 +10,6 @@ public class NodeSystem : Singleton<NodeSystem> {
     [SerializeField] float _closeDist = 0.10f;
     [SerializeField] bool _diagonal;
     [SerializeField] Pathfinding _path;
-    [SerializeField] Unit testUnit;
     public List<Node> _nodes;
     RaycastHit hit;
     BoxCollider _col;
@@ -37,11 +36,7 @@ public class NodeSystem : Singleton<NodeSystem> {
         if (_init) {
             ObstacleUpdate();
         }
-        Check();
-        if (Input.GetButtonDown("Submit")) {
-            nPath=_path.findPath(findNode(testUnit.transform.position), nDest);
-            testUnit.moveCommand(nDest);
-        }
+        //Check();
     }
 
     void Mapping() {
@@ -72,43 +67,43 @@ public class NodeSystem : Singleton<NodeSystem> {
                 }
             }
         }
-        Debug.Log(_nodes.Count);
+        //Debug.Log(_nodes.Count);
         AddNeighbors();
         _init = true;
     }
 
     void ObstacleUpdate() {
         foreach (Node n in _nodes) {
-            if (Physics.Raycast(new Vector3(n.pos.x, n.pos.y + 10, n.pos.z), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity)) {
-                if (hit.collider.gameObject.layer == LayerMask.NameToLayer(_layerMask)) {
+            if (Physics.Raycast(new Vector3(n.Pos.x, n.Pos.y + 10, n.Pos.z), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity)) {
+                if (hit.collider.gameObject.layer == 6) {
                     n.obstacle = false;
                 } else { n.obstacle = true; }
             }
         }
     }
 
-    private void OnDrawGizmos() {
-        if (Application.isPlaying) {
-            if (_nodes.Count != 0) {
-                foreach (Node n in _nodes) {
-                    if (n.selected) {
-                        Gizmos.color = Color.green;
-                    } else if (n.nodeState==Node.State.Open) {
-                        Gizmos.color = Color.yellow;
-                    } else if (n.nodeState == Node.State.Close) {
-                        Gizmos.color = Color.red;
-                    } else { Gizmos.color = Color.black; }
-                    Gizmos.DrawWireSphere(n.pos, 0.5f);
-                }
-            }
-            if (nPath!=null) {
-                foreach (Node n in nPath) {
-                    Gizmos.color = Color.blue;
-                    Gizmos.DrawWireSphere(n.pos, 0.5f);
-                }
-            }
-        }
-    }
+    //private void OnDrawGizmos() {
+    //    if (Application.isPlaying) {
+    //        if (_nodes.Count != 0) {
+    //            foreach (Node n in _nodes) {
+    //                if (n.selected) {
+    //                    Gizmos.color = Color.green;
+    //                } else if (n.nodeState==Node.State.Open) {
+    //                    Gizmos.color = Color.yellow;
+    //                } else if (n.nodeState == Node.State.Close) {
+    //                    Gizmos.color = Color.red;
+    //                } else { Gizmos.color = Color.black; }
+    //                Gizmos.DrawWireSphere(n.Pos, 0.5f);
+    //            }
+    //        }
+    //        if (nPath!=null) {
+    //            foreach (Node n in nPath) {
+    //                Gizmos.color = Color.blue;
+    //                Gizmos.DrawWireSphere(n.Pos, 0.5f);
+    //            }
+    //        }
+    //    }
+    //}
 
     public Node findNode(Vector3 pos){
         Node resultNode = null;
@@ -129,14 +124,14 @@ public class NodeSystem : Singleton<NodeSystem> {
     }
 
     public float nodeDistance(Node sourceNode, Vector3 DestPosition){
-        return Vector3.Distance(new Vector3(sourceNode.pos.x, sourceNode.pos.y, sourceNode.pos.z), DestPosition);
+        return Vector3.Distance(new Vector3(sourceNode.Pos.x, sourceNode.Pos.y, sourceNode.Pos.z), DestPosition);
     }
 
     private void AddNeighbors() {
         foreach (var n in _nodes) {
             foreach (var n2 in _nodes) {
                 if (n != n2) {
-                    float dist = Vector3.Distance(n.pos, n2.pos);
+                    float dist = Vector3.Distance(n.Pos, n2.Pos);
                     switch (_diagonal) {
                         case true:
                             if (dist <= (_dist * Mathf.Sqrt(2)) + (_dist / 4)) {
@@ -163,9 +158,9 @@ public class NodeSystem : Singleton<NodeSystem> {
             float dist = 100;
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100)) {
                 foreach (Node n in nodeList) {
-                    if (Vector3.Distance(n.pos, hit.point)<dist) {
+                    if (Vector3.Distance(n.Pos, hit.point)<dist) {
                         nInit = n;
-                        dist = Vector3.Distance(n.pos, hit.point);
+                        dist = Vector3.Distance(n.Pos, hit.point);
                     }
                 }
             }
@@ -175,9 +170,10 @@ public class NodeSystem : Singleton<NodeSystem> {
             float dist = 100;
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100)) {
                 foreach (Node n in nodeList) {
-                    if (Vector3.Distance(n.pos, hit.point) < dist) {
+                    if (Vector3.Distance(n.Pos, hit.point) < dist) {
                         nDest = n;
-                        dist = Vector3.Distance(n.pos, hit.point);
+                        dist = Vector3.Distance(n.Pos, hit.point);
+                        //nPath = _path.FindPath(nInit, nDest);
                     }
                 }
             }

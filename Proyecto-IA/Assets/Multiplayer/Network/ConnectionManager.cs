@@ -58,13 +58,13 @@ public class ConnectionManager : Singleton<ConnectionManager> {
 
         clientSalt = LongGenerator.Range(0, long.MaxValue);
         state = State.ChallengeRequest;
-        MsgConnectionRequest();
+        //MsgConnectionRequest();
     }
-    private void MsgConnectionRequest() {
-        ConnectionRequestPacket request = new ConnectionRequestPacket();
-        request.payload.clientsalt = clientSalt;
-        SendToServer(request);
-    }
+    //private void MsgConnectionRequest() {
+    //    ConnectionRequestPacket request = new ConnectionRequestPacket();
+    //    request.payload.clientsalt = clientSalt;
+    //    SendToServer(request);
+    //}
     private void MsgChallengeRequest() {
         //TODO
     }
